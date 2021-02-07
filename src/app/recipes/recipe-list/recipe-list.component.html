@@ -13,7 +13,12 @@
             <p class="mb-1">{{ recipe.description }}</p>
           </div>
           <div class="w-25">
-            <img src="{{ recipe.imagePath }}" alt="" class="img-fluid" />
+            <!-- src="{{ recipe.imagePath }}" -->
+            <img
+              [src]="recipe.imagePath"
+              [alt]="recipe.name"
+              class="img-fluid"
+            />
           </div>
         </div>
       </a>
