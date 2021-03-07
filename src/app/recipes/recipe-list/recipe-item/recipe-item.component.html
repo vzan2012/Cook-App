@@ -1,1 +1,19 @@
-<p>recipe-item works!</p>
+<div class="list-group">
+  <a
+    class="list-group-item list-group-item-action"
+    href="#"
+    (click)="onSelected()"
+  >
+    <div class="d-md-flex">
+      <div class="w-75">
+        <h5 class="mb-1">{{ recipe.name }}</h5>
+        <p class="mb-1">{{ recipe.description }}</p>
+      </div>
+      <div class="w-25">
+        <img [src]="recipe.imagePath" [alt]="recipe.name" class="img-fluid" />
+      </div>
+    </div>
+  </a>
+</div>
+
+<!-- src="{{ recipe.imagePath }}" -->
