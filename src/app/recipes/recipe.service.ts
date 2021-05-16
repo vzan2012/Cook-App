@@ -1,4 +1,4 @@
-import { EventEmitter, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Ingredient } from '../shared/ingredient.model';
 import { ShoppingListService } from '../shopping-list/shopping-list.service';
 import { Recipe } from './recipe.model';
@@ -9,8 +9,6 @@ import { Recipe } from './recipe.model';
 export class RecipeService {
 
   constructor(private shoppingListService: ShoppingListService) { }
-
-  recipeSelected = new EventEmitter<Recipe>();
 
   private recipes: Recipe[] = [
     new Recipe('Vegan Pizza Margherita', 'Classic flavours of this Italian comfort food using plant-based substitutes', 'https://images.immediate.co.uk/production/volatile/sites/30/2020/08/vegan-pizza-67125d6.jpg', [new Ingredient('Pizza Dough', 1), new Ingredient('Tomato Sauce', 1), new Ingredient('Fresh Basil (Oregano leaves)', 1)]),
