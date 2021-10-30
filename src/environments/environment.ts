@@ -6,6 +6,8 @@ export const environment = {
   production: false
 };
 
+export const recipesDB_URL = 'https://ng-cook-recipes-206f7-default-rtdb.firebaseio.com/recipes.json';
+
 /*
  * For easier debugging in development mode, you can import the following file
  * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.

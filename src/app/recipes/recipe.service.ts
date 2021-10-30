@@ -17,6 +17,12 @@ export class RecipeService {
     new Recipe('Grape Juice', 'Easy to make this sweet drink', 'https://www.cookforyourlife.org/wp-content/uploads/2018/08/Fresh-Grape-Juice.jpg', [new Ingredient('Grapes', 3), new Ingredient('Lemon', 1)]),
   ];
 
+  // Set Recipes 
+  setRecipes(recipes: Recipe[]) {
+    this.recipes = recipes
+    this.recipesChanged.next(this.recipes.slice())
+  }
+
   // Get a single recipe by id 
   getRecipe(index: number) {
     return this.recipes[index]
