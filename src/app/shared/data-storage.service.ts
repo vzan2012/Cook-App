@@ -5,6 +5,8 @@ import { RecipeService } from '../recipes/recipe.service';
 import { recipesDB_URL } from 'src/environments/environment';
 import { Recipe } from '../recipes/recipe.model';
 
+import { map, tap } from 'rxjs/operators'
+
 @Injectable({
   providedIn: 'root'
 })
@@ -20,9 +22,13 @@ export class DataStorageService {
   }
 
   fetchRecipes() {
-    this.http.get<Recipe[]>(recipesDB_URL).subscribe((recipes) => {
-      console.log(recipes);
-      this.recipeService.setRecipes(recipes)
-    })
+    return this.http.get<Recipe[]>(recipesDB_URL).pipe(
+      map(recipes => recipes.map(recipe => {
+        return { ...recipe, ingredients: recipe.ingredients ? recipe.ingredients : [] }
+      })),
+      tap(recipes => {
+        this.recipeService.setRecipes(recipes)
+      })
+    )
   }
 }

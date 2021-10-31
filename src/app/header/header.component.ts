@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { DataStorageService } from '../shared/data-storage.service';
 
 @Component({
@@ -7,6 +8,8 @@ import { DataStorageService } from '../shared/data-storage.service';
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent implements OnInit {
+
+  fetchRecipeSubscription!: Subscription;
 
   constructor(private dataStorageService: DataStorageService) { }
 
@@ -18,7 +21,11 @@ export class HeaderComponent implements OnInit {
   }
 
   onFetchData() {
-    this.dataStorageService.fetchRecipes();
+    this.fetchRecipeSubscription = this.dataStorageService.fetchRecipes().subscribe();
+  }
+
+  ngOnDestroy() {
+    this.fetchRecipeSubscription.unsubscribe();
   }
 
 }
