@@ -35,10 +35,12 @@ export class AuthComponent implements OnInit {
       this.signUpSubscription = this.authService.signUp(form.value.email, form.value.password).subscribe(resData => {
         console.log(resData);
         this.isLoading = false
-      }, err => {
-        console.log(err);
-        this.error = 'An error occured !!!'
+      }, errResp => {
+        console.log(errResp);
+        this.error = errResp
         this.isLoading = false
+
+
       })
     }
 
