@@ -8,6 +8,21 @@ export const environment = {
 
 export const recipesDB_URL = 'https://ng-cook-recipes-206f7-default-rtdb.firebaseio.com/recipes.json';
 
+export class FirebaseAuthVars {
+  private FIREBASE_WEB_KEY: string = '';
+
+  getFirebaseWebKey() {
+    return this.FIREBASE_WEB_KEY
+  }
+
+  getSignUpURL() {
+    return `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${this.FIREBASE_WEB_KEY}`
+  }
+
+  getSignINURL() {
+    return `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${this.FIREBASE_WEB_KEY}`
+  }
+}
 /*
  * For easier debugging in development mode, you can import the following file
  * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.
