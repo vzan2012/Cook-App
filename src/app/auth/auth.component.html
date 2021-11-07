@@ -1,5 +1,14 @@
+<!-- Error - Section -->
+<div class="row justify-content-center" *ngIf="error">
+  <div class="alert alert-danger" role="alert" *ngIf="error">{{ error }}</div>
+</div>
 <div class="row">
-  <div class="card recipe-auth-card offset-xl-5">
+  <!-- Loader - Section -->
+  <div class="loading-section" *ngIf="isLoading">
+    <app-loading-spinner></app-loading-spinner>
+  </div>
+  <!-- Login / SignUp - Form -Section   -->
+  <div class="card recipe-auth-card" *ngIf="!isLoading">
     <form
       class="recipe-auth-form"
       #authForm="ngForm"

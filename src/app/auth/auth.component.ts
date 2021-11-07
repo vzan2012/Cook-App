@@ -12,7 +12,8 @@ export class AuthComponent implements OnInit {
 
   signUpSubscription !: Subscription
   isLoginMode: boolean = true;
-
+  isLoading: boolean = false;
+  error!: string;
 
   constructor(private authService: AuthService) { }
 
@@ -26,10 +27,19 @@ export class AuthComponent implements OnInit {
   onSubmit(form: NgForm) {
     if (!form.valid) return;
 
-    if (this.isLoginMode) {
+    this.isLoading = true;
 
+    if (this.isLoginMode) {
+      // this.error = '';
     } else {
-      this.signUpSubscription = this.authService.signUp(form.value.email, form.value.password).subscribe(resData => console.log(resData), err => console.log(err))
+      this.signUpSubscription = this.authService.signUp(form.value.email, form.value.password).subscribe(resData => {
+        console.log(resData);
+        this.isLoading = false
+      }, err => {
+        console.log(err);
+        this.error = 'An error occured !!!'
+        this.isLoading = false
+      })
     }
 
   }
