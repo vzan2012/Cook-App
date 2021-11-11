@@ -1,9 +1,10 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { Subject, throwError } from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
 
 import { FirebaseAuthVars } from 'src/environments/environment'
+import { User } from './user.model';
 
 export interface AuthResponseData {
   idToken: string
@@ -19,6 +20,8 @@ export interface AuthResponseData {
 })
 export class AuthService {
 
+  user = new Subject<User>();
+
   private firebase = new FirebaseAuthVars();
 
   constructor(private http: HttpClient) { }
@@ -26,34 +29,26 @@ export class AuthService {
   signUp(email: string, password: string) {
     return this.http.post<AuthResponseData>(this.firebase.getSignUpURL(), {
       email, password, returnSecureToken: true
-    }).pipe(catchError(errResp => {
-      let errMsg = 'An unknown error occured !!!'
-      if (!errResp.error || !errResp.error.error)
-        return throwError(errMsg)
-
-      switch (errResp.error.error.message) {
-        case 'EMAIL_EXISTS':
-          errMsg = 'Email already exists !!!'
-          break;
-        case 'OPERATION_NOT_ALLOWED':
-          errMsg = 'This operations is not allowed !!!'
-          break
-        case 'TOO_MANY_ATTEMPTS_TRY_LATER':
-          errMsg = 'Tried with many attempts !!!'
-          break
-      }
-
-      return throwError(errMsg)
-
-    }))
+    }).pipe(catchError(this.handleError), tap(respData => this.handleAuthentication(respData.email, respData.localId, respData.idToken, +respData.expiresIn)))
   }
 
   login(email: string, password: string) {
     return this.http.post<AuthResponseData>(this.firebase.getSignINURL(), {
       email, password, returnSecureToken: true
     }).pipe(
-      catchError(this.handleError)
+      catchError(this.handleError),
+      tap(respData => this.handleAuthentication(respData.email, respData.localId, respData.idToken, +respData.expiresIn))
     )
+  }
+
+
+  // Handle Authentication 
+  private handleAuthentication(email: string, userId: string, token: string, expiresIn: number) {
+    const expirationDate = new Date(new Date().getTime() + +expiresIn * 1000)
+    const user = new User(email, userId, token, expirationDate)
+
+    this.user.next(user);
+
   }
 
   // Handle Errors 
