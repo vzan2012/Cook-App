@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { Subscription } from 'rxjs';
-import { AuthService } from './auth.service';
+import { Observable, Subscription } from 'rxjs';
+import { AuthResponseData, AuthService } from './auth.service';
 
 @Component({
   selector: 'app-auth',
@@ -10,7 +10,8 @@ import { AuthService } from './auth.service';
 })
 export class AuthComponent implements OnInit {
 
-  signUpSubscription !: Subscription
+  authObs!: Observable<AuthResponseData>;
+  authSubscription !: Subscription
   isLoginMode: boolean = true;
   isLoading: boolean = false;
   error!: string;
@@ -30,24 +31,24 @@ export class AuthComponent implements OnInit {
     this.isLoading = true;
 
     if (this.isLoginMode) {
-      // this.error = '';
+      this.authObs = this.authService.login(form.value.email, form.value.password);
     } else {
-      this.signUpSubscription = this.authService.signUp(form.value.email, form.value.password).subscribe(resData => {
-        console.log(resData);
-        this.isLoading = false
-      }, errResp => {
-        console.log(errResp);
-        this.error = errResp
-        this.isLoading = false
-
-
-      })
+      this.authObs = this.authService.signUp(form.value.email, form.value.password)
     }
+
+    this.authSubscription = this.authObs.subscribe(resData => {
+      console.log(resData);
+      this.isLoading = false
+    }, errResp => {
+      console.log(errResp);
+      this.error = errResp
+      this.isLoading = false
+    })
 
   }
 
   ngOnDestroy() {
-    this.signUpSubscription.unsubscribe();
+    this.authSubscription.unsubscribe();
   }
 
 }
