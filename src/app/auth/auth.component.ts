@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
+import { Router } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 import { AuthResponseData, AuthService } from './auth.service';
 
@@ -8,15 +9,15 @@ import { AuthResponseData, AuthService } from './auth.service';
   templateUrl: './auth.component.html',
   styleUrls: ['./auth.component.scss']
 })
-export class AuthComponent implements OnInit {
+export class AuthComponent implements OnInit, OnDestroy {
 
   authObs!: Observable<AuthResponseData>;
-  authSubscription !: Subscription
+  authSubscription !: Subscription;
   isLoginMode: boolean = true;
   isLoading: boolean = false;
   error!: string;
 
-  constructor(private authService: AuthService) { }
+  constructor(private authService: AuthService, private router: Router) { }
 
   ngOnInit(): void {
   }
@@ -39,6 +40,7 @@ export class AuthComponent implements OnInit {
     this.authSubscription = this.authObs.subscribe(resData => {
       console.log(resData);
       this.isLoading = false
+      this.router.navigate(['/recipes']);
     }, errResp => {
       console.log(errResp);
       this.error = errResp
@@ -48,7 +50,8 @@ export class AuthComponent implements OnInit {
   }
 
   ngOnDestroy() {
-    this.authSubscription.unsubscribe();
+    // TODO: Need to check the unsubscribe - bug raises 
+    //   this.authSubscription.unsubscribe();
   }
 
 }
