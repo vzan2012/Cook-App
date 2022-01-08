@@ -6,7 +6,7 @@ import { DataStorageService } from '../shared/data-storage.service';
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
-  styleUrls: ['./header.component.scss']
+  styleUrls: ['./header.component.scss'],
 })
 export class HeaderComponent implements OnInit, OnDestroy {
   userSub!: Subscription;
@@ -14,10 +14,15 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   isAuthenticated: boolean = false;
 
-  constructor(private dataStorageService: DataStorageService, private authService: AuthService) { }
+  constructor(
+    private dataStorageService: DataStorageService,
+    private authService: AuthService
+  ) {}
 
   ngOnInit(): void {
-    this.userSub = this.authService.user.subscribe(user => { this.isAuthenticated = !!user });
+    this.userSub = this.authService.user.subscribe((user) => {
+      this.isAuthenticated = !!user;
+    });
   }
 
   onSaveData() {
@@ -25,12 +30,17 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   onFetchData() {
-    this.fetchRecipeSubscription = this.dataStorageService.fetchRecipes().subscribe();
+    this.fetchRecipeSubscription = this.dataStorageService
+      .fetchRecipes()
+      .subscribe();
+  }
+
+  onLogout() {
+    this.authService.logout();
   }
 
   ngOnDestroy() {
     this.userSub.unsubscribe();
     this.fetchRecipeSubscription.unsubscribe();
   }
-
 }
