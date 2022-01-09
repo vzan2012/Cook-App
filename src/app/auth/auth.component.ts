@@ -7,23 +7,21 @@ import { AuthResponseData, AuthService } from './auth.service';
 @Component({
   selector: 'app-auth',
   templateUrl: './auth.component.html',
-  styleUrls: ['./auth.component.scss']
+  styleUrls: ['./auth.component.scss'],
 })
 export class AuthComponent implements OnInit, OnDestroy {
-
   authObs!: Observable<AuthResponseData>;
-  authSubscription !: Subscription;
+  authSubscription!: Subscription;
   isLoginMode: boolean = true;
   isLoading: boolean = false;
   error!: string;
 
-  constructor(private authService: AuthService, private router: Router) { }
+  constructor(private authService: AuthService, private router: Router) {}
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   onSwitchMode() {
-    this.isLoginMode = !this.isLoginMode
+    this.isLoginMode = !this.isLoginMode;
   }
 
   onSubmit(form: NgForm) {
@@ -32,26 +30,37 @@ export class AuthComponent implements OnInit, OnDestroy {
     this.isLoading = true;
 
     if (this.isLoginMode) {
-      this.authObs = this.authService.login(form.value.email, form.value.password);
+      this.authObs = this.authService.login(
+        form.value.email,
+        form.value.password
+      );
     } else {
-      this.authObs = this.authService.signUp(form.value.email, form.value.password)
+      this.authObs = this.authService.signUp(
+        form.value.email,
+        form.value.password
+      );
     }
 
-    this.authSubscription = this.authObs.subscribe(resData => {
-      console.log(resData);
-      this.isLoading = false
-      this.router.navigate(['/recipes']);
-    }, errResp => {
-      console.log(errResp);
-      this.error = errResp
-      this.isLoading = false
-    })
+    this.authSubscription = this.authObs.subscribe(
+      (resData) => {
+        console.log(resData);
+        this.isLoading = false;
+        this.router.navigate(['/recipes']);
+      },
+      (errResp) => {
+        console.log(errResp);
+        this.error = errResp;
+        this.isLoading = false;
+      }
+    );
+  }
 
+  onHandleError() {
+    this.error = null;
   }
 
   ngOnDestroy() {
-    // TODO: Need to check the unsubscribe - bug raises 
+    // TODO: Need to check the unsubscribe - bug raises
     //   this.authSubscription.unsubscribe();
   }
-
 }
