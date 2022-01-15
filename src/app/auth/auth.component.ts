@@ -1,8 +1,17 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component,
+  ComponentFactoryResolver,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 import { AuthResponseData, AuthService } from './auth.service';
+
+import { AlertComponent } from './../shared/alert/alert.component';
+import { PlaceholderDirective } from '../shared/placeholder/placeholder.directive';
 
 @Component({
   selector: 'app-auth',
@@ -15,8 +24,15 @@ export class AuthComponent implements OnInit, OnDestroy {
   isLoginMode: boolean = true;
   isLoading: boolean = false;
   error!: string;
+  @ViewChild(PlaceholderDirective) alertHost: PlaceholderDirective;
 
-  constructor(private authService: AuthService, private router: Router) {}
+  private closeSub: Subscription;
+
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private componentFactoryResolver: ComponentFactoryResolver
+  ) {}
 
   ngOnInit(): void {}
 
@@ -50,6 +66,7 @@ export class AuthComponent implements OnInit, OnDestroy {
       (errResp) => {
         console.log(errResp);
         this.error = errResp;
+        this.showErrorAlert(errResp);
         this.isLoading = false;
       }
     );
@@ -59,8 +76,25 @@ export class AuthComponent implements OnInit, OnDestroy {
     this.error = null;
   }
 
+  // Creation of Dynamic Component - For ErrorAlert
+  private showErrorAlert(message: string) {
+    const alertCmpFactory =
+      this.componentFactoryResolver.resolveComponentFactory(AlertComponent);
+    const hostViewContainerRef = this.alertHost.viewContainerRef;
+
+    hostViewContainerRef.clear();
+    const componentRef = hostViewContainerRef.createComponent(alertCmpFactory);
+
+    componentRef.instance.message = message;
+    componentRef.instance.close.subscribe(() => {
+      this.closeSub.unsubscribe();
+      hostViewContainerRef.clear();
+    });
+  }
+
   ngOnDestroy() {
     // TODO: Need to check the unsubscribe - bug raises
     //   this.authSubscription.unsubscribe();
+    if (this.closeSub) this.closeSub.unsubscribe();
   }
 }
