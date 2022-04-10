@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { SharedModule } from '../shared/shared.module';
 
-const appRoutes: Routes = [{ path: 'auth', component: AuthComponent }];
+const appRoutes: Routes = [{ path: '', component: AuthComponent }];
 
 @NgModule({
   declarations: [AuthComponent],
