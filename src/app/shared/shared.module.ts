@@ -6,20 +6,19 @@ import { DropdownDirective } from './dropdown/dropdown.directive';
 import { PlaceholderDirective } from './placeholder/placeholder.directive';
 
 @NgModule({
-  declarations: [
-    AlertComponent,
-    LoadingSpinnerComponent,
-    DropdownDirective,
-    PlaceholderDirective,
-  ],
-  imports: [CommonModule],
-  exports: [
-    AlertComponent,
-    LoadingSpinnerComponent,
-    DropdownDirective,
-    PlaceholderDirective,
-    CommonModule,
-  ],
-  entryComponents: [AlertComponent],
+    declarations: [
+        AlertComponent,
+        LoadingSpinnerComponent,
+        DropdownDirective,
+        PlaceholderDirective,
+    ],
+    imports: [CommonModule],
+    exports: [
+        AlertComponent,
+        LoadingSpinnerComponent,
+        DropdownDirective,
+        PlaceholderDirective,
+        CommonModule,
+    ]
 })
 export class SharedModule {}
