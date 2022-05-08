@@ -1,15 +1,21 @@
 import { Injectable } from '@angular/core';
+import { Store } from '@ngrx/store';
 import { Subject } from 'rxjs';
+
 import { Ingredient } from '../shared/ingredient.model';
 import { ShoppingListService } from '../shopping-list/shopping-list.service';
 import { Recipe } from './recipe.model';
+import * as ShoppingListActions from '../shopping-list/store/shopping-list.actions';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class RecipeService {
   recipesChanged = new Subject<Recipe[]>();
-  constructor(private shoppingListService: ShoppingListService) { }
+  constructor(
+    private shoppingListService: ShoppingListService,
+    private store: Store<{ shoppingList: { ingredients: Ingredient[] } }>
+  ) {}
 
   // private recipes: Recipe[] = [
   //   new Recipe('Vegan Pizza Margherita', 'Classic flavours of this Italian comfort food using plant-based substitutes', 'https://images.immediate.co.uk/production/volatile/sites/30/2020/08/vegan-pizza-67125d6.jpg', [new Ingredient('Pizza Dough', 1), new Ingredient('Tomato Sauce', 1), new Ingredient('Fresh Basil (Oregano leaves)', 1)]),
@@ -19,41 +25,42 @@ export class RecipeService {
 
   private recipes: Recipe[] = [];
 
-  // Set Recipes 
+  // Set Recipes
   setRecipes(recipes: Recipe[]) {
-    this.recipes = recipes
-    this.recipesChanged.next(this.recipes.slice())
+    this.recipes = recipes;
+    this.recipesChanged.next(this.recipes.slice());
   }
 
-  // Get a single recipe by id 
+  // Get a single recipe by id
   getRecipe(index: number) {
-    return this.recipes[index]
+    return this.recipes[index];
   }
 
-  // Returns all the Recipes 
+  // Returns all the Recipes
   getRecipes() {
-    return this.recipes.slice()
+    return this.recipes.slice();
   }
 
   addIngredientsToShoppingList(ingredients: Ingredient[]) {
-    this.shoppingListService.addIngredients(ingredients)
+    // this.shoppingListService.addIngredients(ingredients);
+    this.store.dispatch(new ShoppingListActions.AddIngredients(ingredients));
   }
 
-  // Add Recipe 
+  // Add Recipe
   addRecipe(recipe: Recipe) {
-    this.recipes.push(recipe)
-    this.recipesChanged.next(this.recipes.slice())
+    this.recipes.push(recipe);
+    this.recipesChanged.next(this.recipes.slice());
   }
 
-  // Update Recipe 
+  // Update Recipe
   updateRecipe(index: number, newRecipe: Recipe) {
-    this.recipes[index] = newRecipe
-    this.recipesChanged.next(this.recipes.slice())
+    this.recipes[index] = newRecipe;
+    this.recipesChanged.next(this.recipes.slice());
   }
 
   // Delete Recipe
   deleteRecipe(index: number) {
-    this.recipes.splice(index, 1)
-    this.recipesChanged.next(this.recipes.slice())
+    this.recipes.splice(index, 1);
+    this.recipesChanged.next(this.recipes.slice());
   }
 }
